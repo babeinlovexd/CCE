@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from cce.utils.i18n import _
 
 class CalendarGrid(ctk.CTkFrame):
     def __init__(self, master, project, on_day_click, **kwargs):
@@ -24,7 +25,7 @@ class CalendarGrid(ctk.CTkFrame):
 
         days = self.project.calendar_model.generate_calendar_matrix(year)
         if not days:
-            ctk.CTkLabel(self.grid_scroll, text="No calendar configured.").pack(pady=20)
+            ctk.CTkLabel(self.grid_scroll, text=_("No calendar configured.")).pack(pady=20)
             return
 
         # Simple grouping by Month
@@ -47,15 +48,17 @@ class CalendarGrid(ctk.CTkFrame):
             if m_name != current_month:
                 current_month = m_name
                 # New month section
-                month_frame = ctk.CTkFrame(self.grid_scroll)
-                month_frame.pack(fill="x", pady=10, padx=5)
-                ctk.CTkLabel(month_frame, text=m_name, font=("Arial", 14, "bold")).pack(anchor="w", pady=5)
+                month_frame = ctk.CTkFrame(self.grid_scroll, corner_radius=10)
+                month_frame.pack(fill="x", pady=15, padx=10)
+
+                ctk.CTkLabel(month_frame, text=m_name, font=("Arial", 18, "bold"), text_color=m.color if m else "white").pack(anchor="center", pady=(10, 5))
 
                 # Weekday headers
                 header_frame = ctk.CTkFrame(month_frame, fg_color="transparent")
-                header_frame.pack(fill="x")
+                header_frame.pack(fill="x", padx=10)
                 for i, wd in enumerate(self.project.calendar_model.weekdays):
-                    ctk.CTkLabel(header_frame, text=wd.name[:3], width=50).grid(row=0, column=i, padx=2, pady=2)
+                    lbl = ctk.CTkLabel(header_frame, text=wd.name[:3], width=60, font=("Arial", 12, "bold"), text_color="gray70")
+                    lbl.grid(row=0, column=i, padx=4, pady=5)
 
                 self.days_grid = ctk.CTkFrame(month_frame, fg_color="transparent")
                 self.days_grid.pack(fill="x")

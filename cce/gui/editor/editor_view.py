@@ -5,6 +5,7 @@ from cce.gui.editor.tab_planets import TabPlanets
 from cce.gui.editor.tab_calendar import TabCalendar
 from cce.gui.editor.tab_holidays import TabHolidays
 from cce.gui.editor.tab_astronomy import TabAstronomy
+from cce.utils.i18n import _
 
 class EditorView(ctk.CTkFrame):
     def __init__(self, master, app, project, **kwargs):
@@ -16,38 +17,38 @@ class EditorView(ctk.CTkFrame):
         self.tabview = ctk.CTkTabview(self)
         self.tabview.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.tabview.add("World & Base")
-        self.tabview.add("Planets")
-        self.tabview.add("Calendar")
-        self.tabview.add("Holidays")
-        self.tabview.add("Astronomy")
+        self.tabview.add(_("World & Base"))
+        self.tabview.add(_("Planets"))
+        self.tabview.add(_("Calendar"))
+        self.tabview.add(_("Holidays"))
+        self.tabview.add(_("Astronomy"))
 
-        self.tab_world = TabWorld(self.tabview.tab("World & Base"), self.project)
+        self.tab_world = TabWorld(self.tabview.tab(_("World & Base")), self.project)
         self.tab_world.pack(fill="both", expand=True)
 
-        self.tab_planets = TabPlanets(self.tabview.tab("Planets"), self.project)
+        self.tab_planets = TabPlanets(self.tabview.tab(_("Planets")), self.project)
         self.tab_planets.pack(fill="both", expand=True)
 
-        self.tab_calendar = TabCalendar(self.tabview.tab("Calendar"), self.project)
+        self.tab_calendar = TabCalendar(self.tabview.tab(_("Calendar")), self.project)
         self.tab_calendar.pack(fill="both", expand=True)
 
-        self.tab_holidays = TabHolidays(self.tabview.tab("Holidays"), self.project)
+        self.tab_holidays = TabHolidays(self.tabview.tab(_("Holidays")), self.project)
         self.tab_holidays.pack(fill="both", expand=True)
 
-        self.tab_astronomy = TabAstronomy(self.tabview.tab("Astronomy"), self.project)
+        self.tab_astronomy = TabAstronomy(self.tabview.tab(_("Astronomy")), self.project)
         self.tab_astronomy.pack(fill="both", expand=True)
 
         # Bottom Bar
         self.bottom_frame = ctk.CTkFrame(self)
         self.bottom_frame.pack(fill="x", side="bottom", padx=10, pady=10)
 
-        self.btn_save = ctk.CTkButton(self.bottom_frame, text="Save Project", command=self.save_project)
+        self.btn_save = ctk.CTkButton(self.bottom_frame, text=_("Save Project"), command=self.save_project)
         self.btn_save.pack(side="left", padx=10)
 
-        self.btn_load = ctk.CTkButton(self.bottom_frame, text="Load Project", command=self.app.load_project)
+        self.btn_load = ctk.CTkButton(self.bottom_frame, text=_("Load Project"), command=self.app.load_project)
         self.btn_load.pack(side="left", padx=10)
 
-        self.btn_generate = ctk.CTkButton(self.bottom_frame, text="🚀 Generate & Open Calendar", fg_color="green", command=self.generate_calendar)
+        self.btn_generate = ctk.CTkButton(self.bottom_frame, text=_("🚀 Generate & Open Calendar"), fg_color="green", command=self.generate_calendar)
         self.btn_generate.pack(side="right", padx=10)
 
     def save_project(self):

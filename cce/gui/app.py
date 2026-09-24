@@ -5,6 +5,7 @@ import os
 from cce.models.project import Project
 from cce.gui.editor.editor_view import EditorView
 from cce.gui.viewer.viewer_main import ViewerView
+from cce.utils.i18n import i18n, _
 
 class Application(ctk.CTk):
     def __init__(self):
@@ -19,31 +20,63 @@ class Application(ctk.CTk):
         self.project = Project()
 
         # Menu bar (using a top frame as customtk doesn't have native menus)
-        self.menu_frame = ctk.CTkFrame(self, height=40)
+        self.menu_frame = ctk.CTkFrame(self, height=50, corner_radius=0, fg_color=("gray85", "gray15"))
         self.menu_frame.pack(fill="x", side="top")
 
-        self.btn_export = ctk.CTkButton(self.menu_frame, text="📄 Export Timeline (MD)", width=120, command=self.export_timeline)
-        self.btn_export.pack(side="right", padx=10, pady=5)
+        # Logo / Title
+        self.title_lbl = ctk.CTkLabel(self.menu_frame, text="🌌 Custom Calendar Engine", font=("Arial", 20, "bold"))
+        self.title_lbl.pack(side="left", padx=20, pady=10)
+
+        self.btn_export = ctk.CTkButton(self.menu_frame, text=_("📄 Export Timeline (MD)"), width=120, command=self.export_timeline, fg_color="transparent", border_width=1, text_color=("gray10", "gray90"))
+        self.btn_export.pack(side="right", padx=10, pady=10)
+
+        self.lang_var = ctk.StringVar(value=i18n.current_lang)
+        self.lang_menu = ctk.CTkOptionMenu(self.menu_frame, values=["de", "en"], variable=self.lang_var, command=self.change_language, width=60, fg_color="transparent", text_color=("gray10", "gray90"))
+        self.lang_menu.pack(side="right", padx=10, pady=10)
+
+        self.lang_lbl = ctk.CTkLabel(self.menu_frame, text=_("Language"), font=("Arial", 12))
+        self.lang_lbl.pack(side="right", padx=5, pady=10)
 
         # Initialize Views
-        self.main_container = ctk.CTkFrame(self)
-        self.main_container.pack(fill="both", expand=True)
+        self.main_container = ctk.CTkFrame(self, fg_color="transparent")
+        self.main_container.pack(fill="both", expand=True, padx=10, pady=10)
 
+        self.editor_view = None
+        self.viewer_view = None
+        self.current_view = None
+
+        self.rebuild_views()
+
+    def change_language(self, choice):
+        i18n.set_language(choice)
+        # Update static top labels
+        self.btn_export.configure(text=_("📄 Export Timeline (MD)"))
+        self.lang_lbl.configure(text=_("Language"))
+        # Rebuild views to apply translations
+        is_editor = self.current_view == self.editor_view
+        self.rebuild_views()
+        if is_editor:
+            self.switch_to_editor()
+        else:
+            self.switch_to_viewer()
+
+    def rebuild_views(self):
+        if self.editor_view: self.editor_view.destroy()
+        if self.viewer_view: self.viewer_view.destroy()
         self.editor_view = EditorView(self.main_container, self, self.project)
         self.viewer_view = ViewerView(self.main_container, self, self.project)
 
-        # Start with Editor
-        self.current_view = None
-        self.switch_to_editor()
+        if not self.current_view:
+             self.switch_to_editor()
 
     def switch_to_editor(self):
-        if self.current_view:
+        if self.current_view and self.current_view.winfo_exists():
             self.current_view.pack_forget()
         self.current_view = self.editor_view
         self.current_view.pack(fill="both", expand=True)
 
     def switch_to_viewer(self):
-        if self.current_view:
+        if self.current_view and self.current_view.winfo_exists():
             self.current_view.pack_forget()
 
         self.current_view = self.viewer_view

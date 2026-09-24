@@ -17,54 +17,54 @@ class DayPanel(ctk.CTkFrame):
         self.date_label.pack(pady=10)
 
         # Sky Panel
-        self.sky_panel = ctk.CTkFrame(self, height=80)
-        self.sky_panel.pack(fill="x", padx=10, pady=5)
-        self.sky_label = ctk.CTkLabel(self.sky_panel, text="Sky Panel (Suns & Moons)")
-        self.sky_label.pack(pady=10)
+        self.sky_panel = ctk.CTkFrame(self, corner_radius=10)
+        self.sky_panel.pack(fill="x", padx=15, pady=5)
+        self.sky_label = ctk.CTkLabel(self.sky_panel, text=_("Sky Panel (Suns & Moons)"), font=("Arial", 12))
+        self.sky_label.pack(pady=15, padx=10)
 
         # Event List
-        self.events_list_frame = ctk.CTkScrollableFrame(self, height=150)
-        self.events_list_frame.pack(fill="both", expand=True, padx=10, pady=5)
-        ctk.CTkLabel(self.events_list_frame, text="Events for this day").pack(pady=2)
+        self.events_list_frame = ctk.CTkScrollableFrame(self, height=150, corner_radius=10)
+        self.events_list_frame.pack(fill="both", expand=True, padx=15, pady=5)
+        ctk.CTkLabel(self.events_list_frame, text="📅 " + _("Events for this day"), font=("Arial", 12, "bold")).pack(pady=5)
 
         self.events_container = ctk.CTkFrame(self.events_list_frame, fg_color="transparent")
         self.events_container.pack(fill="both", expand=True)
 
         # Event Editor
-        self.event_editor_frame = ctk.CTkScrollableFrame(self, height=250)
-        self.event_editor_frame.pack(fill="x", padx=10, pady=5)
+        self.event_editor_frame = ctk.CTkScrollableFrame(self, height=250, corner_radius=10)
+        self.event_editor_frame.pack(fill="x", padx=15, pady=(5, 15))
 
-        ctk.CTkLabel(self.event_editor_frame, text="Add/Edit Event", font=("Arial", 12, "bold")).pack(pady=5)
+        ctk.CTkLabel(self.event_editor_frame, text="✍️ " + _("Add/Edit Event"), font=("Arial", 14, "bold")).pack(pady=(10, 5))
 
         self.event_id_var = ctk.StringVar(value="")
 
-        self.event_title = ctk.CTkEntry(self.event_editor_frame, placeholder_text="Event Title")
+        self.event_title = ctk.CTkEntry(self.event_editor_frame, placeholder_text=_("Event Title"))
         self.event_title.pack(fill="x", padx=10, pady=2)
 
         time_frame = ctk.CTkFrame(self.event_editor_frame, fg_color="transparent")
         time_frame.pack(fill="x", padx=10, pady=2)
-        self.event_start_time = ctk.CTkEntry(time_frame, placeholder_text="Start Time (e.g. 2h 30m)", width=120)
+        self.event_start_time = ctk.CTkEntry(time_frame, placeholder_text=_("Start Time (e.g. 2h 30m)"), width=120)
         self.event_start_time.pack(side="left", padx=(0,5), expand=True, fill="x")
-        self.event_end_time = ctk.CTkEntry(time_frame, placeholder_text="End Time", width=120)
+        self.event_end_time = ctk.CTkEntry(time_frame, placeholder_text=_("End Time"), width=120)
         self.event_end_time.pack(side="left", padx=(5,0), expand=True, fill="x")
 
-        self.event_loc = ctk.CTkEntry(self.event_editor_frame, placeholder_text="Location")
+        self.event_loc = ctk.CTkEntry(self.event_editor_frame, placeholder_text=_("Location"))
         self.event_loc.pack(fill="x", padx=10, pady=2)
 
-        self.event_plot = ctk.CTkEntry(self.event_editor_frame, placeholder_text="Plotline / Category")
+        self.event_plot = ctk.CTkEntry(self.event_editor_frame, placeholder_text=_("Plotline / Category"))
         self.event_plot.pack(fill="x", padx=10, pady=2)
 
-        self.event_chars = ctk.CTkEntry(self.event_editor_frame, placeholder_text="Characters (comma separated)")
+        self.event_chars = ctk.CTkEntry(self.event_editor_frame, placeholder_text=_("Characters (comma separated)"))
         self.event_chars.pack(fill="x", padx=10, pady=2)
 
-        self.event_desc = ctk.CTkEntry(self.event_editor_frame, placeholder_text="Description / Notes")
+        self.event_desc = ctk.CTkEntry(self.event_editor_frame, placeholder_text=_("Description / Notes"))
         self.event_desc.pack(fill="x", padx=10, pady=2)
 
         btn_frame = ctk.CTkFrame(self.event_editor_frame, fg_color="transparent")
         btn_frame.pack(fill="x", padx=10, pady=5)
 
-        ctk.CTkButton(btn_frame, text="Save Event", command=self.save_event).pack(side="left", expand=True, padx=5)
-        ctk.CTkButton(btn_frame, text="Clear", fg_color="gray", command=self.clear_editor).pack(side="right", expand=True, padx=5)
+        ctk.CTkButton(btn_frame, text=_("Save Event"), command=self.save_event).pack(side="left", expand=True, padx=5)
+        ctk.CTkButton(btn_frame, text=_("Clear"), fg_color="gray", command=self.clear_editor).pack(side="right", expand=True, padx=5)
 
     def set_day(self, day, year, day_start_tick):
         epoch = self.project.calendar_model.get_epoch_for_year(year)
@@ -116,7 +116,7 @@ class DayPanel(ctk.CTkFrame):
         day_events = [e for e in self.project.event_store.events if e.start_tick >= self.current_day_start_tick and e.start_tick < self.current_day_end_tick]
 
         if not day_events:
-            ctk.CTkLabel(self.events_container, text="No events on this day.").pack(pady=10)
+            ctk.CTkLabel(self.events_container, text=_("No events on this day.")).pack(pady=10)
             return
 
         # sort by start_tick
@@ -135,10 +135,10 @@ class DayPanel(ctk.CTkFrame):
             lbl = ctk.CTkLabel(f, text=f"[{t_str}] {ev.title}\n{ev.location} | {ev.plotline}", justify="left")
             lbl.pack(side="left", padx=10, pady=5)
 
-            btn_del = ctk.CTkButton(f, text="Del", width=40, fg_color="red", command=lambda e=ev: self.delete_event(e))
+            btn_del = ctk.CTkButton(f, text=_("Del"), width=40, fg_color="red", command=lambda e=ev: self.delete_event(e))
             btn_del.pack(side="right", padx=5, pady=5)
 
-            btn_edit = ctk.CTkButton(f, text="Edit", width=40, command=lambda e=ev: self.edit_event(e))
+            btn_edit = ctk.CTkButton(f, text=_("Edit"), width=40, command=lambda e=ev: self.edit_event(e))
             btn_edit.pack(side="right", padx=5, pady=5)
 
     def save_event(self):

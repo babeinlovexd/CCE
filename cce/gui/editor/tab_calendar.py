@@ -1,5 +1,7 @@
 import customtkinter as ctk
 from cce.models.calendar_model import Epoch, Month, Weekday
+from cce.utils.i18n import _
+from cce.gui.utils.tooltip import Tooltip
 
 class TabCalendar(ctk.CTkFrame):
     def __init__(self, master, project, **kwargs):
@@ -9,36 +11,37 @@ class TabCalendar(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
         # Left Column: Epochs
-        self.epochs_frame = ctk.CTkFrame(self)
-        self.epochs_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        self.epochs_frame = ctk.CTkFrame(self, corner_radius=10)
+        self.epochs_frame.grid(row=0, column=0, sticky="nsew", padx=(20, 10), pady=20)
 
-        ctk.CTkLabel(self.epochs_frame, text="Epochs / Eras", font=("Arial", 14, "bold")).pack(pady=5)
+        ctk.CTkLabel(self.epochs_frame, text="📜 " + _("Epochs / Eras"), font=("Arial", 16, "bold")).pack(pady=(15, 5))
         self.epochs_list = ctk.CTkScrollableFrame(self.epochs_frame)
-        self.epochs_list.pack(fill="both", expand=True, padx=5, pady=5)
-        self.btn_add_epoch = ctk.CTkButton(self.epochs_frame, text="Add Epoch", command=self.add_epoch_row)
-        self.btn_add_epoch.pack(pady=5)
+        self.epochs_list.pack(fill="both", expand=True, padx=15, pady=5)
+        self.btn_add_epoch = ctk.CTkButton(self.epochs_frame, text=_("Add Epoch"), command=self.add_epoch_row)
+        self.btn_add_epoch.pack(pady=(10, 15))
 
         # Middle Column: Months
-        self.months_frame = ctk.CTkFrame(self)
-        self.months_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+        self.months_frame = ctk.CTkFrame(self, corner_radius=10)
+        self.months_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=20)
 
-        ctk.CTkLabel(self.months_frame, text="Months / Seasons", font=("Arial", 14, "bold")).pack(pady=5)
+        ctk.CTkLabel(self.months_frame, text="📅 " + _("Months / Seasons"), font=("Arial", 16, "bold")).pack(pady=(15, 5))
         self.months_list = ctk.CTkScrollableFrame(self.months_frame)
-        self.months_list.pack(fill="both", expand=True, padx=5, pady=5)
-        self.btn_add_month = ctk.CTkButton(self.months_frame, text="Add Month", command=self.add_month_row)
-        self.btn_add_month.pack(pady=5)
+        self.months_list.pack(fill="both", expand=True, padx=15, pady=5)
+        self.btn_add_month = ctk.CTkButton(self.months_frame, text=_("Add Month"), command=self.add_month_row)
+        self.btn_add_month.pack(pady=(10, 15))
 
         # Right Column: Weekdays
-        self.weekdays_frame = ctk.CTkFrame(self)
-        self.weekdays_frame.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
+        self.weekdays_frame = ctk.CTkFrame(self, corner_radius=10)
+        self.weekdays_frame.grid(row=0, column=2, sticky="nsew", padx=(10, 20), pady=20)
 
-        ctk.CTkLabel(self.weekdays_frame, text="Weekdays", font=("Arial", 14, "bold")).pack(pady=5)
+        ctk.CTkLabel(self.weekdays_frame, text="🗓️ " + _("Weekdays"), font=("Arial", 16, "bold")).pack(pady=(15, 5))
         self.weekdays_list = ctk.CTkScrollableFrame(self.weekdays_frame)
-        self.weekdays_list.pack(fill="both", expand=True, padx=5, pady=5)
-        self.btn_add_weekday = ctk.CTkButton(self.weekdays_frame, text="Add Weekday", command=self.add_weekday_row)
-        self.btn_add_weekday.pack(pady=5)
+        self.weekdays_list.pack(fill="both", expand=True, padx=15, pady=5)
+        self.btn_add_weekday = ctk.CTkButton(self.weekdays_frame, text=_("Add Weekday"), command=self.add_weekday_row)
+        self.btn_add_weekday.pack(pady=(10, 15))
 
         self.epoch_rows = []
         self.month_rows = []
@@ -68,15 +71,16 @@ class TabCalendar(ctk.CTkFrame):
         row_frame = ctk.CTkFrame(self.epochs_list)
         row_frame.pack(fill="x", pady=2)
 
-        name_ent = ctk.CTkEntry(row_frame, placeholder_text="Name", width=100)
+        name_ent = ctk.CTkEntry(row_frame, placeholder_text=_("Name"), width=100)
         name_ent.pack(side="left", padx=5)
 
-        start_ent = ctk.CTkEntry(row_frame, placeholder_text="Start Year", width=70)
+        start_ent = ctk.CTkEntry(row_frame, placeholder_text=_("Start Year"), width=70)
         start_ent.pack(side="left", padx=5)
 
         y0_var = ctk.BooleanVar()
-        y0_check = ctk.CTkCheckBox(row_frame, text="Yr 0", variable=y0_var, width=50)
+        y0_check = ctk.CTkCheckBox(row_frame, text=_("Yr 0"), variable=y0_var, width=50)
         y0_check.pack(side="left", padx=5)
+        Tooltip(y0_check, _("Check this if the epoch mathematically contains a 'Year 0' instead of jumping straight from -1 to 1."))
 
         btn_del = ctk.CTkButton(row_frame, text="X", width=30, fg_color="red", command=lambda f=row_frame: self.remove_row(f, self.epoch_rows))
         btn_del.pack(side="right", padx=5)
@@ -92,13 +96,13 @@ class TabCalendar(ctk.CTkFrame):
         row_frame = ctk.CTkFrame(self.months_list)
         row_frame.pack(fill="x", pady=2)
 
-        name_ent = ctk.CTkEntry(row_frame, placeholder_text="Name", width=90)
+        name_ent = ctk.CTkEntry(row_frame, placeholder_text=_("Name"), width=90)
         name_ent.pack(side="left", padx=5)
 
-        days_ent = ctk.CTkEntry(row_frame, placeholder_text="Days", width=50)
+        days_ent = ctk.CTkEntry(row_frame, placeholder_text=_("Days"), width=50)
         days_ent.pack(side="left", padx=5)
 
-        col_ent = ctk.CTkEntry(row_frame, placeholder_text="Color (#HEX)", width=80)
+        col_ent = ctk.CTkEntry(row_frame, placeholder_text=_("Color (#HEX)"), width=80)
         col_ent.pack(side="left", padx=5)
 
         btn_del = ctk.CTkButton(row_frame, text="X", width=30, fg_color="red", command=lambda f=row_frame: self.remove_row(f, self.month_rows))
@@ -117,7 +121,7 @@ class TabCalendar(ctk.CTkFrame):
         row_frame = ctk.CTkFrame(self.weekdays_list)
         row_frame.pack(fill="x", pady=2)
 
-        name_ent = ctk.CTkEntry(row_frame, placeholder_text="Name", width=150)
+        name_ent = ctk.CTkEntry(row_frame, placeholder_text=_("Name"), width=150)
         name_ent.pack(side="left", padx=5)
 
         btn_del = ctk.CTkButton(row_frame, text="X", width=30, fg_color="red", command=lambda f=row_frame: self.remove_row(f, self.weekday_rows))

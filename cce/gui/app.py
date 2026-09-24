@@ -31,7 +31,7 @@ class Application(ctk.CTk):
         self.btn_export.pack(side="right", padx=10, pady=10)
 
         self.lang_var = ctk.StringVar(value=i18n.current_lang)
-        self.lang_menu = ctk.CTkOptionMenu(self.menu_frame, values=["de", "en"], variable=self.lang_var, command=self.change_language, width=60, fg_color="transparent", text_color=("gray10", "gray90"))
+        self.lang_menu = ctk.CTkOptionMenu(self.menu_frame, values=["de", "en"], variable=self.lang_var, command=self.change_language, width=60, text_color=("gray10", "gray90"))
         self.lang_menu.pack(side="right", padx=10, pady=10)
 
         self.lang_lbl = ctk.CTkLabel(self.menu_frame, text=_("Language"), font=("Arial", 12))

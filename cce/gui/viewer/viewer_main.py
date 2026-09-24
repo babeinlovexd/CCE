@@ -96,6 +96,8 @@ class ViewerView(ctk.CTkFrame):
         if self.sync_planet_var.get() not in p_names:
             self.sync_planet_var.set(p_names[0])
 
+        self.search_panel.populate_filters()
+
         self.date_label.configure(text=self.get_date_label_text())
         self.calendar_grid.render_year(self.current_year, self.current_month_idx)
         self.update_sync_display()
@@ -173,16 +175,24 @@ class ViewerView(ctk.CTkFrame):
         except ValueError:
             pass
 
-    def on_search(self, query):
+    def on_search(self, query, filter_val=""):
         highlights = set()
         query = query.lower()
-        if query:
-            for e in self.project.event_store.events:
-                if query in e.title.lower() or query in e.description.lower() or any(query in c.lower() for c in e.characters):
-                    highlights.add(e.start_tick)
+
+        for e in self.project.event_store.events:
+            match_q = True
+            if query:
+                match_q = query in e.title.lower() or query in e.description.lower() or any(query in c.lower() for c in e.characters)
+
+            match_f = True
+            if filter_val:
+                match_f = (filter_val == e.location) or (filter_val in e.characters)
+
+            if match_q and match_f and (query or filter_val):
+                highlights.add(e.start_tick)
 
         self.calendar_grid.set_search_highlights(highlights)
-        self.on_show()
+        self.calendar_grid.render_year(self.current_year, self.current_month_idx)
 
     def on_events_changed(self):
         self.on_show() # refresh grid badges

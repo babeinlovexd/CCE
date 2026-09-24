@@ -147,6 +147,8 @@ class DayPanel(ctk.CTkFrame):
         if not title:
             return
 
+        self.master.master.app.mark_dirty()
+
         desc = self.event_desc.get().strip()
         loc = self.event_loc.get().strip()
         plot = self.event_plot.get().strip()
@@ -206,7 +208,12 @@ class DayPanel(ctk.CTkFrame):
         self.event_chars.insert(0, ", ".join(ev.characters))
 
     def delete_event(self, ev: StoryEvent):
+        from tkinter import messagebox
+        if not messagebox.askyesno(_("Confirm Delete"), _("Are you sure you want to delete this event?")):
+            return
+
         self.project.event_store.events = [e for e in self.project.event_store.events if e.id != ev.id]
+        self.master.master.app.mark_dirty()
         self.load_events()
         self.on_events_changed()
 

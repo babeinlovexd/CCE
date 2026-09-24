@@ -45,6 +45,9 @@ class EditorView(ctk.CTkFrame):
         self.btn_save = ctk.CTkButton(self.bottom_frame, text=_("Save Project"), command=self.save_project)
         self.btn_save.pack(side="left", padx=10)
 
+        self.btn_save_as = ctk.CTkButton(self.bottom_frame, text=_("Save As..."), command=self.save_project_as)
+        self.btn_save_as.pack(side="left", padx=10)
+
         self.btn_load = ctk.CTkButton(self.bottom_frame, text=_("Load Project"), command=self.app.load_project)
         self.btn_load.pack(side="left", padx=10)
 

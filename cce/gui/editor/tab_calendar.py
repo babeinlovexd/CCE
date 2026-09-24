@@ -133,10 +133,16 @@ class TabCalendar(ctk.CTkFrame):
         self.weekday_rows.append((row_frame, name_ent))
 
     def remove_row(self, row_frame, row_list):
+        from tkinter import messagebox
+        from cce.utils.i18n import _
+        if not messagebox.askyesno(_("Confirm Delete"), _("Are you sure you want to delete this item?")):
+            return
         row_list[:] = [r for r in row_list if r[0] != row_frame]
         row_frame.destroy()
+        self.master.master.master.app.mark_dirty()
 
     def save_data(self):
+        self.master.master.master.app.mark_dirty()
         new_epochs = []
         for _, name_ent, start_ent, y0_var in self.epoch_rows:
             name = name_ent.get()

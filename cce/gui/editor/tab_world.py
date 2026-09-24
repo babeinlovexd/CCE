@@ -91,10 +91,16 @@ class TabWorld(ctk.CTkFrame):
         self.unit_rows.append((row_frame, name_ent, abbr_ent, count_ent))
 
     def remove_unit_row(self, row_frame):
+        from tkinter import messagebox
+        from cce.utils.i18n import _
+        if not messagebox.askyesno(_("Confirm Delete"), _("Are you sure you want to delete this item?")):
+            return
         self.unit_rows = [r for r in self.unit_rows if r[0] != row_frame]
         row_frame.destroy()
+        self.master.master.master.app.mark_dirty()
 
     def save_data(self):
+        self.master.master.master.app.mark_dirty()
         self.project.name = self.world_name_entry.get()
         self.project.time_engine.base_tick_name = self.tick_name_entry.get()
         try:

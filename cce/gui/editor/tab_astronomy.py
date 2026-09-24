@@ -101,10 +101,16 @@ class TabAstronomy(ctk.CTkFrame):
         self.moon_rows.append((row_frame, name_ent, cycle_ent, offset_ent))
 
     def remove_row(self, row_frame, row_list):
+        from tkinter import messagebox
+        from cce.utils.i18n import _
+        if not messagebox.askyesno(_("Confirm Delete"), _("Are you sure you want to delete this item?")):
+            return
         row_list[:] = [r for r in row_list if r[0] != row_frame]
         row_frame.destroy()
+        self.master.master.master.app.mark_dirty()
 
     def save_data(self):
+        self.master.master.master.app.mark_dirty()
         new_suns = []
         for _, name_ent, dawn_ent, zenith_ent, dusk_ent in self.sun_rows:
             name = name_ent.get()

@@ -65,10 +65,16 @@ class TabPlanets(ctk.CTkFrame):
         self.planet_rows.append((row_frame, name_ent, day_ent, year_ent, prim_var, planet))
 
     def remove_planet_row(self, row_frame):
+        from tkinter import messagebox
+        from cce.utils.i18n import _
+        if not messagebox.askyesno(_("Confirm Delete"), _("Are you sure you want to delete this item?")):
+            return
         self.planet_rows = [r for r in self.planet_rows if r[0] != row_frame]
         row_frame.destroy()
+        self.master.master.master.app.mark_dirty()
 
     def save_data(self):
+        self.master.master.master.app.mark_dirty()
         new_planets = []
         new_primary = None
         for _, name_ent, day_ent, year_ent, prim_var, orig_planet in self.planet_rows:

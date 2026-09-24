@@ -6,6 +6,7 @@ from cce.models.project import Project
 from cce.gui.editor.editor_view import EditorView
 from cce.gui.viewer.viewer_main import ViewerView
 from cce.utils.i18n import i18n, _
+from cce.utils.config import config
 
 class Application(ctk.CTk):
     def __init__(self):
@@ -18,6 +19,10 @@ class Application(ctk.CTk):
         ctk.set_default_color_theme("blue")
 
         self.project = Project()
+        self.current_filepath = None
+        self.is_dirty = False
+
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         # Menu bar (using a top frame as customtk doesn't have native menus)
         self.menu_frame = ctk.CTkFrame(self, height=50, corner_radius=0, fg_color=("gray85", "gray15"))
@@ -46,6 +51,31 @@ class Application(ctk.CTk):
         self.current_view = None
 
         self.rebuild_views()
+
+        # Auto load last project
+        if config.last_opened_file and os.path.exists(config.last_opened_file):
+            self.load_project(config.last_opened_file)
+
+    def mark_dirty(self):
+        self.is_dirty = True
+        self.update_title()
+
+    def update_title(self):
+        title = "🌌 Custom Calendar Engine (CCE) - "
+        if self.current_filepath:
+            title += os.path.basename(self.current_filepath)
+        else:
+            title += _("New Project")
+
+        if self.is_dirty:
+            title += " *"
+        self.title(title)
+
+    def on_closing(self):
+        if self.is_dirty:
+            if not messagebox.askyesno(_("Unsaved Changes"), _("You have unsaved changes. Do you really want to quit?")):
+                return
+        self.destroy()
 
     def change_language(self, choice):
         i18n.set_language(choice)
@@ -84,24 +114,52 @@ class Application(ctk.CTk):
         self.viewer_view.on_show()
 
     def save_project(self):
+        if self.current_filepath:
+            self._do_save(self.current_filepath)
+        else:
+            self.save_project_as()
+
+    def save_project_as(self):
         filepath = filedialog.asksaveasfilename(
             defaultextension=".worldcal",
-            filetypes=[("World Calendar Files", "*.worldcal"), ("JSON Files", "*.json"), ("All Files", "*.*")]
+            filetypes=[(_("World Calendar Files"), "*.worldcal"), (_("JSON Files"), "*.json"), (_("All Files"), "*.*")]
         )
         if filepath:
-            try:
-                self.project.save_to_file(filepath)
-                messagebox.showinfo("Success", f"Project saved to {filepath}")
-            except Exception as e:
-                messagebox.showerror("Error", f"Failed to save project:\n{e}")
+            self._do_save(filepath)
 
-    def load_project(self):
-        filepath = filedialog.askopenfilename(
-            filetypes=[("World Calendar Files", "*.worldcal"), ("JSON Files", "*.json"), ("All Files", "*.*")]
-        )
+    def _do_save(self, filepath):
+        try:
+            self.project.save_to_file(filepath)
+            self.current_filepath = filepath
+            self.is_dirty = False
+            self.update_title()
+            config.last_opened_file = filepath
+            config.save()
+            messagebox.showinfo(_("Success"), _("Project saved successfully."))
+        except Exception as e:
+            messagebox.showerror(_("Error"), f"{_('Failed to save project:')}\n{e}")
+
+    def load_project(self, override_filepath=None):
+        if self.is_dirty:
+             if not messagebox.askyesno(_("Unsaved Changes"), _("You have unsaved changes. Discard and load new project?")):
+                 return
+
+        filepath = override_filepath
+        if not filepath:
+            filepath = filedialog.askopenfilename(
+                filetypes=[(_("World Calendar Files"), "*.worldcal"), (_("JSON Files"), "*.json"), (_("All Files"), "*.*")]
+            )
+
         if filepath:
             try:
                 self.project = Project.load_from_file(filepath)
+
+                self.current_filepath = filepath
+                self.is_dirty = False
+                self.update_title()
+                config.last_opened_file = filepath
+                config.save()
+
                 # Re-initialize views with new project
                 self.editor_view.destroy()
                 self.viewer_view.destroy()

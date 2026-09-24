@@ -7,16 +7,40 @@ from cce.gui.editor.editor_view import EditorView
 from cce.gui.viewer.viewer_main import ViewerView
 from cce.utils.i18n import i18n, _
 from cce.utils.config import config
+from PIL import Image
+
+# Path resolution for PyInstaller
+import sys
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+
 
 class Application(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Custom Calendar Engine (CCE)")
+        self.title("Chronix")
         self.geometry("1200x800")
 
+        # Load Window Icon if exists
+        icon_path = os.path.join(ASSETS_DIR, "icon.ico")
+        if os.path.exists(icon_path):
+            try:
+                self.iconbitmap(icon_path)
+            except Exception:
+                pass # Unix systems might throw error on .ico
+
         ctk.set_appearance_mode("System")
-        ctk.set_default_color_theme("blue")
+
+        # Check for custom theme
+        theme_path = os.path.join(ASSETS_DIR, "theme.json")
+        if os.path.exists(theme_path):
+            ctk.set_default_color_theme(theme_path)
+        else:
+            ctk.set_default_color_theme("blue")
 
         self.project = Project()
         self.current_filepath = None
@@ -25,12 +49,24 @@ class Application(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         # Menu bar (using a top frame as customtk doesn't have native menus)
-        self.menu_frame = ctk.CTkFrame(self, height=50, corner_radius=0, fg_color=("gray85", "gray15"))
+        self.menu_frame = ctk.CTkFrame(self, height=60, corner_radius=0, fg_color=("gray85", "gray15"))
         self.menu_frame.pack(fill="x", side="top")
 
-        # Logo / Title
-        self.title_lbl = ctk.CTkLabel(self.menu_frame, text="🌌 Custom Calendar Engine", font=("Arial", 20, "bold"))
-        self.title_lbl.pack(side="left", padx=20, pady=10)
+        # App Logo
+        logo_path = os.path.join(ASSETS_DIR, "logo.png")
+        if os.path.exists(logo_path):
+            # ctk.CTkImage handles scaling for HighDPI automatically
+            # We scale it down to 40x40 for the top bar
+            logo_img = ctk.CTkImage(light_image=Image.open(logo_path),
+                                    dark_image=Image.open(logo_path),
+                                    size=(40, 40))
+            self.logo_lbl = ctk.CTkLabel(self.menu_frame, text="", image=logo_img)
+            self.logo_lbl.pack(side="left", padx=(20, 10), pady=10)
+            self.title_lbl = ctk.CTkLabel(self.menu_frame, text="Custom Calendar Engine", font=("Arial", 20, "bold"))
+        else:
+            self.title_lbl = ctk.CTkLabel(self.menu_frame, text="🌌 Custom Calendar Engine", font=("Arial", 20, "bold"))
+
+        self.title_lbl.pack(side="left", padx=(0 if os.path.exists(logo_path) else 20, 20), pady=10)
 
         self.btn_export = ctk.CTkButton(self.menu_frame, text=_("📄 Export Timeline (MD)"), width=120, command=self.export_timeline, fg_color="transparent", border_width=1, text_color=("gray10", "gray90"))
         self.btn_export.pack(side="right", padx=10, pady=10)
@@ -61,7 +97,7 @@ class Application(ctk.CTk):
         self.update_title()
 
     def update_title(self):
-        title = "🌌 Custom Calendar Engine (CCE) - "
+        title = "🌌 Chronix - "
         if self.current_filepath:
             title += os.path.basename(self.current_filepath)
         else:

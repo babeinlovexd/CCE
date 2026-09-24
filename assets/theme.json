@@ -1,0 +1,72 @@
+{
+  "CTk": {
+    "fg_color": ["gray92", "gray14"]
+  },
+  "CTkToplevel": {
+    "fg_color": ["gray92", "gray14"]
+  },
+  "CTkFrame": {
+    "corner_radius": 6,
+    "border_width": 0,
+    "fg_color": ["gray86", "gray17"],
+    "top_fg_color": ["gray81", "gray20"],
+    "border_color": ["gray77", "gray25"]
+  },
+  "CTkButton": {
+    "corner_radius": 6,
+    "border_width": 0,
+    "fg_color": ["#3B8ED0", "#1F6AA5"],
+    "hover_color": ["#36719F", "#144870"],
+    "border_color": ["#3E454A", "#949A9F"],
+    "text_color": ["#DCE4EE", "#DCE4EE"],
+    "text_color_disabled": ["gray74", "gray60"]
+  },
+  "CTkLabel": {
+    "corner_radius": 0,
+    "fg_color": "transparent",
+    "text_color": ["gray10", "#DCE4EE"]
+  },
+  "CTkEntry": {
+    "corner_radius": 6,
+    "border_width": 2,
+    "fg_color": ["#F9F9FA", "#343638"],
+    "border_color": ["#979DA2", "#565B5E"],
+    "text_color": ["gray10", "#DCE4EE"],
+    "placeholder_text_color": ["gray52", "gray62"]
+  },
+  "CTkOptionMenu": {
+    "corner_radius": 6,
+    "border_width": 2,
+    "fg_color": ["#3B8ED0", "#1F6AA5"],
+    "button_color": ["#36719F", "#144870"],
+    "button_hover_color": ["#275781", "#203A4F"],
+    "border_color": ["#3B8ED0", "#1F6AA5"],
+    "text_color": ["#DCE4EE", "#DCE4EE"],
+    "text_color_disabled": ["gray74", "gray60"]
+  },
+  "CTkCheckBox": {
+    "corner_radius": 3,
+    "border_width": 3,
+    "fg_color": ["#3B8ED0", "#1F6AA5"],
+    "border_color": ["#979DA2", "#565B5E"],
+    "hover_color": ["#3B8ED0", "#1F6AA5"],
+    "checkmark_color": ["#DCE4EE", "#DCE4EE"],
+    "text_color": ["gray10", "#DCE4EE"],
+    "text_color_disabled": ["gray60", "gray45"]
+  },
+  "CTkScrollableFrame": {
+    "label_fg_color": ["gray78", "gray23"]
+  },
+  "CTkScrollbar": {
+    "corner_radius": 1000,
+    "border_spacing": 4,
+    "fg_color": "transparent",
+    "button_color": ["gray55", "gray41"],
+    "button_hover_color": ["gray40", "gray53"]
+  },
+  "DropdownMenu": {
+    "fg_color": ["gray90", "gray20"],
+    "hover_color": ["gray75", "gray28"],
+    "text_color": ["gray10", "gray90"]
+  }
+}

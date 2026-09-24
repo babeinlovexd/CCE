@@ -1,6 +1,6 @@
-# Custom Calendar Engine (CCE)
+# Chronix
 
-The **Custom Calendar Engine** is a comprehensive, standalone desktop application built for worldbuilders, fantasy/sci-fi authors, and RPG gamemasters. It allows you to design completely arbitrary calendar and time systems from scratch and track story events on an absolute timeline.
+**Chronix** is a comprehensive, standalone desktop application built for worldbuilders, fantasy/sci-fi authors, and RPG gamemasters. It allows you to design completely arbitrary calendar and time systems from scratch and track story events on an absolute timeline.
 
 ## 🌟 Key Features
 
@@ -35,9 +35,9 @@ This project is pre-configured to be packed using **PyInstaller**.
 Run the provided build script from your terminal:
 ```bash
 pip install pyinstaller
-pyinstaller --noconsole --onefile --windowed --name="CustomCalendarEngine" main.py
+pyinstaller --noconsole --onefile --windowed --add-data "assets:assets" --name="Chronix" main.py
 ```
-After the build completes, your standalone application will be located in the newly created `dist/` folder as `CustomCalendarEngine.exe`.
+After the build completes, your standalone application will be located in the newly created `dist/` folder as `Chronix.exe`.
 
 ### On macOS / Linux
 You can use the included bash script:

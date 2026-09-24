@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from cce.models.event_store import StoryEvent
+from cce.utils.i18n import _
 
 class DayPanel(ctk.CTkFrame):
     def __init__(self, master, project, on_events_changed, **kwargs):
